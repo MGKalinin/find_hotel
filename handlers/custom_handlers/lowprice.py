@@ -4,6 +4,7 @@ from telebot.types import Message
 from config_data import config
 import requests
 import json
+from utils.misc.destination import destination_id
 
 
 @bot.message_handler(commands=['lowprice'])
@@ -17,14 +18,5 @@ def find_city(message: Message):
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['city'] = message.text
         bot.reply_to(message, f'Выполняю поиск в городе {data["city"]}')
-        # создаём запрос к API
-        url = "https://hotels4.p.rapidapi.com/locations/v3/search"
-        querystring = {"q": message.text, "locale": "en_US", "langid": "1033", "siteid": "300000001"}
-        headers = {
-            "X-RapidAPI-Key": config.RAPID_API_KEY,
-            "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
-        }
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        ans = json.loads(response.text)
-        print(ans)
-
+        possible_options_cities = destination_id(data['city'])
+        print(possible_options_cities)
