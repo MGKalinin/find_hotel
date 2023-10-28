@@ -7,8 +7,6 @@ from config import RAPID_API_KEY
 def destination_id(city):
     """Функция поиска городов по наименованию введённому пользователем."""
     # locations/v3/search
-    # вернуть список городов вида:
-    # food_names = ["Суши", "Спагетти", "Хачапури"]
     url = "https://hotels4.p.rapidapi.com/locations/v3/search"
     querystring = {"q": city, "locale": "en_US", "langid": "1033", "siteid": "300000001"}
     headers = {
@@ -28,5 +26,3 @@ def destination_id(city):
 # if __name__ == "__main__":
 #     destination_id('rome')
 
-# x = list(d.keys())
-#     print(x)        # ['A', 'B', 'C']

@@ -7,16 +7,17 @@ router = Router()
 
 
 @router.message(Command(commands=["start"]))
+# Начало работы бота по команде /start
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
-        text="Выберите, что хотите заказать: "
-             "блюда (/food) или напитки (/drinks).",
+        text="Введите город:",
         reply_markup=ReplyKeyboardRemove()
     )
 
 
 @router.message(Command(commands=["cancel"]))
+# Отмена работы бота по команде /cancel
 @router.message(F.text.lower() == "отмена")
 async def cmd_cancel(message: Message, state: FSMContext):
     await state.clear()
