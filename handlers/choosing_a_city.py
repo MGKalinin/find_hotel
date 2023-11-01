@@ -1,8 +1,8 @@
-from aiogram import F, Router
+from aiogram import F, Router, types
 from aiogram.types import Message
-
 from keyboards.make_keyboard import get_keyboard_city
-from utilities.find_destination_id import destination_city
+from utilities.find_destination_id import destination_city, destination_hotel
+from keyboards.make_keyboard import NumbersCallbackFactory
 
 router = Router()
 user_data = {}
@@ -30,6 +30,8 @@ user_data = {}
 #             None: 'Hilton Rome Airport, Fiumicino, Lazio, Italy',
 #             '9605': 'Romeoville, Illinois, United States of America', '6046256': 'Trastevere, Rome, Lazio, Italy'}
 
+# possible_hotels={'7316464': 'Parco De Medici Residence Hotel',
+# '1458367': 'Mancini Park Hotel', '2542677': 'Mirage'}
 
 @router.message(F.text)
 async def find_city(message: Message):
@@ -37,7 +39,18 @@ async def find_city(message: Message):
                          reply_markup=get_keyboard_city(destination_city(message.text)))
 
 
+@router.callback_query(NumbersCallbackFactory.filter())
+async def find_hotel(
+        callback: types.CallbackQuery,
+        callback_data: NumbersCallbackFactory
+):
+    # Текущее значение
+    print(f'callback_data {callback_data}')
+    # callback_data id_city = '3023'
 
+    await callback.message.edit_text(text="Выберите отель:",
+                                     reply_markup=get_keyboard_city(destination_hotel(id_city=callback_data)))
+    await callback.answer()
 
 # if __name__ == '__main__':
 #     get_keyboard_city(ans)

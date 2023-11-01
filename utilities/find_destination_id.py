@@ -1,5 +1,4 @@
 import requests
-
 from config import RAPID_API_KEY
 
 
@@ -84,7 +83,10 @@ def destination_hotel(id_city):
     possible_hotels = {}
     for i in response['data']['propertySearch']['properties']:
         possible_hotels[i.get('id')] = i['name']
-    # print(possible_hotels)
+
+    possible_hotels.pop(None)
+    possible_hotels = possible_hotels.items()
+    print(possible_hotels)
     return possible_hotels
 
 
@@ -93,3 +95,4 @@ def destination_hotel(id_city):
 
 # if __name__ == "__main__":
 #     destination_hotel(id_city)
+
