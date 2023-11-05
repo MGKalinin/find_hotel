@@ -16,14 +16,12 @@ def destination_city(city):
         "X-RapidAPI-Host": "hotels4.p.rapidapi.com"
     }
     response = requests.get(url, headers=headers, params=querystring)
-    # print(response.json())
     response = response.json()
     possible_cities = {}
     for i in response['sr']:
         possible_cities[i.get('gaiaId')] = i['regionNames']['fullName']
-    # print(possible_cities)
-    possible_cities.pop(None)
-    possible_cities = possible_cities.items()
+
+    print(f'possible_cities: {possible_cities}')
     return possible_cities
 
 
@@ -77,22 +75,28 @@ def destination_hotel(id_city):
     }
 
     response = requests.post(url, json=payload, headers=headers)
-
-    # print(response.json())
     response = response.json()
     possible_hotels = {}
     for i in response['data']['propertySearch']['properties']:
         possible_hotels[i.get('id')] = i['name']
 
-    possible_hotels.pop(None)
-    possible_hotels = possible_hotels.items()
-    print(possible_hotels)
+    print(f'possible_hotels: {possible_hotels}')
     return possible_hotels
-
 
 # if __name__ == "__main__":
 #     destination_city('rome')
 
 # if __name__ == "__main__":
-#     destination_hotel(id_city)
+#     destination_hotel('3023')
 
+
+# # создаем словарь
+# mydict = {"title": string, "code": integer, "data": array}
+# # 1.проводим десериализацию JSON-объекта
+# y = json.loads(x)
+#  # 2.сериализуем его в JSON-структуру, как строку
+#  x = json.dumps(mydict)
+
+# в примере:
+# 1. loads
+# 2. dump
