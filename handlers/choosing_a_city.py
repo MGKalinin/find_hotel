@@ -1,9 +1,10 @@
 from aiogram import F, Router, types
+from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
+
+from keyboards.make_keyboard import NumbersCallbackFactory
 from keyboards.make_keyboard import get_keyboard_city
 from utilities.find_destination_id import destination_city, destination_hotel
-from keyboards.make_keyboard import NumbersCallbackFactory
-import json
 
 router = Router()
 user_data = {}
@@ -72,10 +73,30 @@ possible_hotels = {'41723': 'Comfort Inn Denver Central', '10469': 'Radisson Hot
                    '33296170': 'SpringHill Suites by Marriott Denver West/Golden'}
 
 
+class ChoosDestination(StatesGroup):
+    choos_city = State()
+    choos_hotel = State()
+    choos_min_price = State()
+    choos_max_price = State()
+
+
+# TODO написать в меню бота /cansel, /minimum_price?
 @router.message(F.text)
 async def find_city(message: Message):
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(destination_city(message.text)))
+    await message.answer(text="Введите максимальную цену:")
+    await message.answer(f"Вы ввели {message.text}")
+
+
+# TODO запросить max или min цену- которую передать в
+#  функцию поиска отелей: типа в список- 0:id город,1:max или min цена?
+
+
+@router.message(F.text)
+async def price_limit(message: Message):
+    await message.answer(text="Введите минимальную цену:")
+    await message.answer(f"Вы ввели {message.text}")
 
 
 @router.callback_query(NumbersCallbackFactory.filter())
@@ -91,4 +112,3 @@ async def find_hotel(
                                      reply_markup=get_keyboard_city(destination_hotel(id_city=str(callback_data))))
 
     await callback.answer()
-

@@ -12,7 +12,7 @@ async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
         text="Введите город:",
-        reply_markup=ReplyKeyboardRemove()
+        # reply_markup=ReplyKeyboardRemove()
     )
 
 

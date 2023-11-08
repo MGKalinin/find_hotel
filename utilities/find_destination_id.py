@@ -21,7 +21,7 @@ def destination_city(city):
     for i in response['sr']:
         possible_cities[i.get('gaiaId')] = i['regionNames']['fullName']
 
-    print(f'possible_cities: {possible_cities}')
+    # print(f'possible_cities: {possible_cities}')
     return possible_cities
 
 
@@ -64,8 +64,8 @@ def destination_hotel(id_city):
         "resultsSize": 200,
         "sort": "PRICE_LOW_TO_HIGH",
         "filters": {"price": {
-            "max": 150,
-            "min": 100
+            "max": 150,  # здесь max цена
+            "min": 100  # здесь min цена
         }}
     }
     headers = {
@@ -80,8 +80,11 @@ def destination_hotel(id_city):
     for i in response['data']['propertySearch']['properties']:
         possible_hotels[i.get('id')] = i['name']
 
-    print(f'possible_hotels: {possible_hotels}')
+    # print(f'possible_hotels: {possible_hotels}')
     return possible_hotels
+
+# https://hotels4.p.rapidapi.com/properties/v2/detail детали отеля по id отеля
+
 
 # if __name__ == "__main__":
 #     destination_city('rome')

@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 # from config_reader import config
-from handlers import common, ordering_food, choosing_a_city
+from handlers import common, choosing_a_city
 from config import BOT_TOKEN
 
 
