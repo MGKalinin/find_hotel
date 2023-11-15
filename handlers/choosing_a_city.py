@@ -1,8 +1,8 @@
 from aiogram import F, Router, types
-from aiogram.filters import StateFilter
+from aiogram.filters import StateFilter, state
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 
 from keyboards.make_keyboard import NumbersCallbackFactory
 from keyboards.make_keyboard import get_keyboard_city
@@ -12,7 +12,7 @@ router = Router()
 user_data = {}
 
 possible_cities = {'553248633938945217': 'Rome City Centre, Rome, Lazio, Italy', '3023': 'Rome, Lazio, Italy',
-                   '5194566': 'Rome, Italy (FCO-Fiumicino - Leonardo da Vinci Intl.)',
+                   '5194566': 'Rome, Italy )',  # (FCO-Fiumicino - Leonardo da Vinci Intl.
                    '6200441': 'Rome Historic Centre, Rome, Lazio, Italy',
                    '9699': 'Rome, Georgia, United States of America', '6046253': 'Vatican, Rome, Lazio, Italy',
                    None: 'Hilton Rome Airport, Fiumicino, Lazio, Italy',
@@ -72,7 +72,10 @@ class ChoosDestination(StatesGroup):
 # 1.после команды /start запрос ввести город
 # 2.запрос выбрать город
 @router.message()  # F.text
-async def find_city(message: Message, state: FSMContext):
+async def find_city(message: Message):
+    await message.answer("Hi there! Fucking price!")
+    user_data = message.text
+    print(user_data)
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(possible_cities))
     # destination_city(message.text))
@@ -87,16 +90,17 @@ async def find_city(message: Message, state: FSMContext):
 # 4.вывод гостиниц в выбранном городе
 @router.callback_query(NumbersCallbackFactory.filter())
 async def find_hotel(
-                     callback: types.CallbackQuery,
-                     callback_data: NumbersCallbackFactory
-                     ):
+        callback: types.CallbackQuery,
+        callback_data: NumbersCallbackFactory
+):
     # Текущее значение
-    print(f'callback_data {callback_data}')
+    print(f'callback_data {callback_data.name_city}')
     # callback_data id_city='3023'
 
-    await callback.message.edit_text(text="Выберите отель:",
-                                     reply_markup=get_keyboard_city(possible_hotels))
+    await callback.message.edit_text(text=f'Вы выбрали город {callback_data}')
+    # await callback.message.edit_text(text="Выберите отель:",
+    #                                  reply_markup=get_keyboard_city(possible_hotels))
+    # reply_markup = get_keyboard_city(possible_hotels)
     # destination_hotel(id_city=str(callback_data)))
 
     await callback.answer()
-
