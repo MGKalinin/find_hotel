@@ -18,6 +18,22 @@ possible_cities = {'553248633938945217': 'Rome City Centre, Rome, Lazio, Italy',
                    None: 'Hilton Rome Airport, Fiumicino, Lazio, Italy',
                    '9605': 'Romeoville, Illinois, United States of America',
                    '6046256': 'Trastevere, Rome, Lazio, Italy', '6341167': 'Trevi Fountain, Rome, Lazio, Italy'}
+possible_cities_shot = {'553248633938945217': 'Rome City Centre', '3023': 'Rome',
+                        '5194566': 'Rome (FCO-Fiumicino - Leonardo da Vinci Intl.)', '6200441': 'Rome Historic Centre',
+                        '9699': 'Rome', '6046253': 'Vatican', None: 'Hilton Rome Airport', '9605': 'Romeoville',
+                        '6046256': 'Trastevere', '6341167': 'Trevi Fountain'}
+possible_cities_display = {'553248633938945217': 'Rome City Centre, Rome, Lazio, Italy', '3023': 'Rome, Lazio, Italy',
+                           '5194566': 'Rome (FCO - Fiumicino-Leonardo da Vinci Intl.), Italy',
+                           '6200441': 'Rome Historic Centre, Rome, Lazio, Italy',
+                           '9699': 'Rome, Georgia, United States', '6046253': 'Vatican, Rome, Lazio, Italy',
+                           None: 'Hilton Rome Airport, Fiumicino, Lazio, Italy',
+                           '9605': 'Romeoville, Illinois, United States', '6046256': 'Trastevere, Rome, Lazio, Italy',
+                           '6341167': 'Trevi Fountain, Rome, Lazio, Italy'}
+possible_cities_sec = {'553248633938945217': 'Rome, Lazio, Italy', '3023': 'Lazio, Italy', '5194566': 'Italy',
+                       '6200441': 'Rome, Lazio, Italy', '9699': 'Georgia, United States',
+                       '6046253': 'Rome, Lazio, Italy', None: 'Fiumicino, Lazio, Italy',
+                       '9605': 'Illinois, United States', '6046256': 'Rome, Lazio, Italy',
+                       '6341167': 'Rome, Lazio, Italy'}
 possible_hotels = {'41723': 'Comfort Inn Denver Central', '10469': 'Radisson Hotel Denver Central',
                    '5658': 'Quality Inn Aurora Denver',
                    '119229': 'Extended Stay America Select Suites Denver Aurora South',
@@ -77,7 +93,7 @@ async def find_city(message: Message):
     user_data = message.text
     print(user_data)
     await message.answer(text="Выберите город:",
-                         reply_markup=get_keyboard_city(possible_cities))
+                         reply_markup=get_keyboard_city(possible_cities_shot))
     # destination_city(message.text))
 
 
@@ -97,7 +113,7 @@ async def find_hotel(
     print(f'callback_data {callback_data.name_city}')
     # callback_data id_city='3023'
 
-    await callback.message.edit_text(text=f'Вы выбрали город {callback_data}')
+    await callback.message.edit_text(text=f'Вы выбрали город {callback_data.name_city}')
     # await callback.message.edit_text(text="Выберите отель:",
     #                                  reply_markup=get_keyboard_city(possible_hotels))
     # reply_markup = get_keyboard_city(possible_hotels)
