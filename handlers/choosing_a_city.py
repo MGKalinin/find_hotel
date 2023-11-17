@@ -53,6 +53,7 @@ async def find_hotel(
     await state.set_state(ChoosDestination.choos_max_price)
 
 
+
 # TODO к выполнению этого шага не переходит
 @router.message(ChoosDestination.choos_min_price)
 async def min_max_price(message: Message, state: FSMContext):
