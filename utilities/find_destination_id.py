@@ -100,6 +100,3 @@ def destination_hotel(id_city):
 #  # 2.сериализуем его в JSON-структуру, как строку
 #  x = json.dumps(mydict)
 
-# в примере:
-# 1. loads
-# 2. dump

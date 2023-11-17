@@ -1,0 +1,1 @@
+### для запуска бота -запустить bot.py ,вместо BOT_TOKEN поставить свой токен.  /handlers/choosing_a_city.py API запрос отключён- выводит примеры из словаря possible_cities_shot.  
