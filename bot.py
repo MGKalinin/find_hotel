@@ -23,7 +23,7 @@ async def main():
     # dp.include_router(ordering_food.router)
 
     # сюда импортируйте ваш собственный роутер - поиск городов
-    dp.include_router(common.router)  # потом вернуть-здесь старт/отмена
+    # dp.include_router(common.router)  # потом вернуть-здесь старт/отмена- переместил
     dp.include_router(choosing_a_city.router)
 
     await dp.start_polling(bot)
