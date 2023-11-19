@@ -21,7 +21,7 @@ def destination_city(city):
     for i in response['sr']:
         possible_cities[i.get('gaiaId')] = i['regionNames']['shortName']  # fullName
 
-    print(f'possible_cities: {possible_cities}')
+    # print(f'possible_cities: {possible_cities}')
     return possible_cities
 
 
