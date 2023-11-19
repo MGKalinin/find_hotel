@@ -73,7 +73,7 @@ async def find_hotel(
 
 @router.message(F.text, ChoosDestination.choos_min_price)
 async def min_max_price(message: Message, state: FSMContext, callback):
-    await message.answer(f'Минимальная стоимость отеля: {callback.answer.message}')
+    await message.answer(f'Минимальная стоимость отеля: {callback.message.answer}')
     await state.set_state(ChoosDestination.choos_max_price)
 
 
