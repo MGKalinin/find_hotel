@@ -29,6 +29,7 @@ class ChoosDestination(StatesGroup):
 # Начало работы бота по команде /start
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
+    await state.set_state(ChoosDestination.choos_city)
     await message.answer(
         text="Введите город:",
         reply_markup=ReplyKeyboardRemove()
@@ -46,15 +47,17 @@ async def cmd_cancel(message: Message, state: FSMContext):
     )
 
 
-@router.message(F.text)
+@router.message(F.text, ChoosDestination.choos_city)  # здесь проблема?
+# по умолчанию хендлеры срабатывают на любое состояние
 # выбор города из доступных
-async def find_city(message: Message):
+async def find_city(message: Message, state: FSMContext):
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(possible_cities_shot))
     # destination_city(message.text))
+    await state.set_state(ChoosDestination.choos_hotel)
 
 
-@router.callback_query(NumbersCallbackFactory.filter())
+@router.callback_query(NumbersCallbackFactory.filter(), ChoosDestination.choos_hotel)
 async def find_hotel(
         callback: types.CallbackQuery,
         callback_data: NumbersCallbackFactory,
@@ -71,11 +74,25 @@ async def find_hotel(
     await state.set_state(ChoosDestination.choos_min_price)
 
 
-
+# функция min_max_price не вызывается
 @router.message(F.text, ChoosDestination.choos_min_price)
-async def min_max_price(message: Message, state: FSMContext, callback):
-    await message.answer(f'Минимальная стоимость отеля: {callback.message.answer}')
+async def min_max_price(message: Message, state: FSMContext):
+    await message.answer(f'Минимальная стоимость отеля: {message.text}')
+    user_data['min'] = message.text
+    print(f'user_data {user_data}')
+    await message.answer(f'Введите максимальную стоимость отеля:')
     await state.set_state(ChoosDestination.choos_max_price)
 
 
+@router.message(F.text, ChoosDestination.choos_max_price)
+async def min_max_price(message: Message, state: FSMContext):
+    await message.answer(f'Ммаксимальная стоимость отеля: {message.text}')
+    user_data['max'] = message.text
+    print(f'user_data {user_data}')
+    await message.answer(f'{user_data}')
 
+
+# TODO запросить город- выбрать город-
+#  запроосить мин.цену(внести в словарь?)-
+#  запросить макс.цену(внести в словарь?)-
+#  вывести итог:город/цена мин&макс
