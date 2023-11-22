@@ -18,18 +18,18 @@ possible_cities_shot = {'553248633938945217': 'Rome City Centre', '3023': 'Rome'
                         '6046256': 'Trastevere', '6341167': 'Trevi Fountain'}
 
 
-class ChoosDestination(StatesGroup):
-    choos_city = State()  # выбор города
-    choos_hotel = State()  # выбор отеля
-    choos_min_price = State()  # выбор минимальной цены
-    choos_max_price = State()  # выбор макимальрной цены
+class ChoosDest(StatesGroup):
+    city = State()  # выбор города
+    hotel = State()  # выбор отеля
+    min_price = State()  # выбор минимальной цены
+    max_price = State()  # выбор макимальрной цены
 
 
 @router.message(Command(commands=["start"]))
 # Начало работы бота по команде /start
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
-    await state.set_state(ChoosDestination.choos_city)
+    await state.set_state(ChoosDest.city)
     await message.answer(
         text="Введите город:",
         reply_markup=ReplyKeyboardRemove()
@@ -47,17 +47,16 @@ async def cmd_cancel(message: Message, state: FSMContext):
     )
 
 
-@router.message(F.text, ChoosDestination.choos_city)  # здесь проблема?
-# по умолчанию хендлеры срабатывают на любое состояние
+@router.message(F.text, ChoosDest.city)
 # выбор города из доступных
 async def find_city(message: Message, state: FSMContext):
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(possible_cities_shot))
     # destination_city(message.text))
-    await state.set_state(ChoosDestination.choos_hotel)
+    await state.set_state(ChoosDest.hotel)
 
 
-@router.callback_query(NumbersCallbackFactory.filter(), ChoosDestination.choos_hotel)
+@router.callback_query(NumbersCallbackFactory.filter(), ChoosDest.hotel)
 async def find_hotel(
         callback: types.CallbackQuery,
         callback_data: NumbersCallbackFactory,
@@ -71,28 +70,30 @@ async def find_hotel(
     #                                  reply_markup=get_keyboard_city(possible_hotels))
     # reply_markup = get_keyboard_city(destination_hotel(id_city=str(callback_data))))
     await callback.message.answer(f'Введите минимальную стоимость отеля:')
-    await state.set_state(ChoosDestination.choos_min_price)
+    await state.set_state(ChoosDest.min_price)
 
 
-# функция min_max_price не вызывается
-@router.message(F.text, ChoosDestination.choos_min_price)
+@router.message(F.text, ChoosDest.min_price)
 async def min_max_price(message: Message, state: FSMContext):
     await message.answer(f'Минимальная стоимость отеля: {message.text}')
     user_data['min'] = message.text
     print(f'user_data {user_data}')
     await message.answer(f'Введите максимальную стоимость отеля:')
-    await state.set_state(ChoosDestination.choos_max_price)
+    await state.set_state(ChoosDest.max_price)
 
 
-@router.message(F.text, ChoosDestination.choos_max_price)
+@router.message(F.text, ChoosDest.max_price)
 async def min_max_price(message: Message, state: FSMContext):
     await message.answer(f'Ммаксимальная стоимость отеля: {message.text}')
     user_data['max'] = message.text
     print(f'user_data {user_data}')
     await message.answer(f'{user_data}')
 
-
 # TODO запросить город- выбрать город-
 #  запроосить мин.цену(внести в словарь?)-
 #  запросить макс.цену(внести в словарь?)-
 #  вывести итог:город/цена мин&макс
+
+# TODO прописать проверку на числа мин/макс
+
+# TODO прописать проверку на ввод буквы город

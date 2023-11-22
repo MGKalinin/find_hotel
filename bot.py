@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import BOT_TOKEN
-from handlers import choosing_a_city
+from handlers import choosing_city
 
 
 async def main():
@@ -18,7 +18,7 @@ async def main():
     dp = Dispatcher(storage=MemoryStorage())
     bot = Bot(BOT_TOKEN)
     # dp.include_router(common.router)
-    dp.include_router(choosing_a_city.router)
+    dp.include_router(choosing_city.router)
     await dp.start_polling(bot)
 
 
