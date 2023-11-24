@@ -25,6 +25,7 @@ class ChoosDest(StatesGroup):
     max_price = State()  # выбор макимальрной цены
 
 
+# .isalpha()
 @router.message(Command(commands=["start"]))
 # Начало работы бота по команде /start
 async def cmd_start(message: Message, state: FSMContext):
@@ -73,6 +74,14 @@ async def find_hotel(
     await state.set_state(ChoosDest.min_price)
 
 
+@router.message(lambda message: not message.text.isdigit(), ChoosDest.min_price)
+async def min_price_invalid(message: types.Message):
+    """
+    Если введёное минимальное значение не числовое.
+    """
+    return await message.reply("Введите числовое значение\nВведите минимальную стоимость отеля:")
+
+
 @router.message(F.text, ChoosDest.min_price)
 async def min_max_price(message: Message, state: FSMContext):
     await message.answer(f'Минимальная стоимость отеля: {message.text}')
@@ -82,6 +91,14 @@ async def min_max_price(message: Message, state: FSMContext):
     await state.set_state(ChoosDest.max_price)
 
 
+@router.message(lambda message: not message.text.isdigit(), ChoosDest.max_price)
+async def max_price_invalid(message: types.Message):
+    """
+    Если введёное максимальное значение не числовое.
+    """
+    return await message.reply("Введите числовое значение\nВведите минимальную стоимость отеля:")
+
+
 @router.message(F.text, ChoosDest.max_price)
 async def min_max_price(message: Message, state: FSMContext):
     await message.answer(f'Ммаксимальная стоимость отеля: {message.text}')
@@ -89,11 +106,9 @@ async def min_max_price(message: Message, state: FSMContext):
     print(f'user_data {user_data}')
     await message.answer(f'{user_data}')
 
-# TODO запросить город- выбрать город-
-#  запроосить мин.цену(внести в словарь?)-
-#  запросить макс.цену(внести в словарь?)-
-#  вывести итог:город/цена мин&макс
-
-# TODO прописать проверку на числа мин/макс
-
 # TODO прописать проверку на ввод буквы город
+#  или вернуть ответ что такого города нет
+
+# TODO вывести fullName по три слова
+
+# TODO запросить дату заезда/ выезда- сделать кнопки календарь
