@@ -5,9 +5,17 @@ from aiogram.fsm.state import StatesGroup, State
 # from aiogram.handlers import message
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.filters import Command
+from aiogram_calendar import SimpleCalendar, SimpleCalendarCallback
+
 from keyboards.make_keyboard import NumbersCallbackFactory
 from keyboards.make_keyboard import get_keyboard_city
 from utilities.find_destination_id import destination_city, destination_hotel
+from datetime import date
+
+from aiogram.types import CallbackQuery
+
+from aiogram_dialog import DialogManager
+from aiogram_dialog.widgets.kbd import Calendar
 
 router = Router()
 user_data = {}
@@ -17,12 +25,27 @@ possible_cities_shot = {'553248633938945217': 'Rome City Centre', '3023': 'Rome'
                         '9699': 'Rome', '6046253': 'Vatican', None: 'Hilton Rome Airport', '9605': 'Romeoville',
                         '6046256': 'Trastevere', '6341167': 'Trevi Fountain'}
 
+possible_cities_full = {'553248633938945217': 'Rome City Centre, Rome, Lazio, Italy', '3023': 'Rome, Lazio, Italy',
+                        '5194566': 'Rome, Italy (FCO-Fiumicino - Leonardo da Vinci Intl.)',
+                        '6200441': 'Rome Historic Centre, Rome, Lazio, Italy',
+                        '9699': 'Rome, Georgia, United States of America', '6046253': 'Vatican, Rome, Lazio, Italy',
+                        None: 'Hilton Rome Airport, Fiumicino, Lazio, Italy',
+                        '9605': 'Romeoville, Illinois, United States of America',
+                        '6046256': 'Trastevere, Rome, Lazio, Italy', '6341167': 'Trevi Fountain, Rome, Lazio, Italy'}
+
+possible_cities_disp = {'553248633938945217': 'Rome, Lazio, Italy', '3023': 'Lazio, Italy', '5194566': 'Italy',
+                        '6200441': 'Rome, Lazio, Italy', '9699': 'Georgia, United States',
+                        '6046253': 'Rome, Lazio, Italy', None: 'Fiumicino, Lazio, Italy',
+                        '9605': 'Illinois, United States', '6046256': 'Rome, Lazio, Italy',
+                        '6341167': 'Rome, Lazio, Italy'}
+
 
 class ChoosDest(StatesGroup):
     city = State()  # выбор города
     hotel = State()  # выбор отеля
     min_price = State()  # выбор минимальной цены
     max_price = State()  # выбор макимальрной цены
+    calend = State()  # календарь
 
 
 # .isalpha()
@@ -52,7 +75,7 @@ async def cmd_cancel(message: Message, state: FSMContext):
 # выбор города из доступных
 async def find_city(message: Message, state: FSMContext):
     await message.answer(text="Выберите город:",
-                         reply_markup=get_keyboard_city(possible_cities_shot))
+                         reply_markup=get_keyboard_city(possible_cities_disp))
     # destination_city(message.text))
     await state.set_state(ChoosDest.hotel)
 
@@ -101,14 +124,19 @@ async def max_price_invalid(message: types.Message):
 
 @router.message(F.text, ChoosDest.max_price)
 async def min_max_price(message: Message, state: FSMContext):
-    await message.answer(f'Ммаксимальная стоимость отеля: {message.text}')
+    await message.answer(f'Максимальная стоимость отеля: {message.text}')
     user_data['max'] = message.text
     print(f'user_data {user_data}')
     await message.answer(f'{user_data}')
+    await message.answer(text="Выберите дату заезда:",
+                         reply_markup=await SimpleCalendar().start_calendar())
+    await state.set_state(ChoosDest.calend)
 
-# TODO прописать проверку на ввод буквы город
-#  или вернуть ответ что такого города нет
 
-# TODO вывести fullName по три слова
-
-# TODO запросить дату заезда/ выезда- сделать кнопки календарь
+@router.callback_query(SimpleCalendarCallback, ChoosDest.calend)
+async def find_date(
+        callback: CallbackQuery,
+        callback_data: SimpleCalendarCallback,
+        state: FSMContext
+):
+    date = SimpleCalendar().process_selection(callback_data)

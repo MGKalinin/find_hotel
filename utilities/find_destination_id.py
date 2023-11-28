@@ -19,9 +19,10 @@ def destination_city(city):
     response = response.json()
     possible_cities = {}
     for i in response['sr']:
-        possible_cities[i.get('gaiaId')] = i['regionNames']['shortName']  # fullName
+        possible_cities[i.get('gaiaId')] = i['regionNames']['shortName']  # shortName  fullName
+        # secondaryDisplayName
 
-    # print(f'possible_cities: {possible_cities}')
+    print(f'possible_cities: {possible_cities}')
     return possible_cities
 
 
@@ -86,8 +87,8 @@ def destination_hotel(id_city):
 # https://hotels4.p.rapidapi.com/properties/v2/detail детали отеля по id отеля
 
 
-# if __name__ == "__main__":
-#     destination_city('rome')
+if __name__ == "__main__":
+    destination_city('rome')
 
 # if __name__ == "__main__":
 #     destination_hotel('3023')
