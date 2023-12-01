@@ -1,9 +1,10 @@
 from aiogram import F, Router, types
 from aiogram.filters import StateFilter, state
+from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 # from aiogram.handlers import message
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 from aiogram.filters import Command
 from aiogram_calendar import SimpleCalendar, SimpleCalendarCallback
 
@@ -46,6 +47,8 @@ class ChoosDest(StatesGroup):
     min_price = State()  # выбор минимальной цены
     max_price = State()  # выбор макимальрной цены
     calend = State()  # календарь
+    check_in = State()  # дата заезда
+    exit = State()  # дата выезда
 
 
 # .isalpha()
@@ -130,13 +133,37 @@ async def min_max_price(message: Message, state: FSMContext):
     await message.answer(f'{user_data}')
     await message.answer(text="Выберите дату заезда:",
                          reply_markup=await SimpleCalendar().start_calendar())
-    await state.set_state(ChoosDest.calend)
+    await state.set_state(ChoosDest.check_in)
 
 
-@router.callback_query(SimpleCalendarCallback, ChoosDest.calend)
-async def find_date(
-        callback: CallbackQuery,
+@router.callback_query(SimpleCalendarCallback.filter(), ChoosDest.check_in)
+async def process_simple_calendar(
+        callback_query: CallbackQuery,
         callback_data: SimpleCalendarCallback,
-        state: FSMContext
-):
-    date = SimpleCalendar().process_selection(callback_data)
+        state: FSMContext):
+    selected, date = await SimpleCalendar().process_selection(
+        callback_query, callback_data)
+    if selected:
+        await callback_query.message.answer(
+            f'Вы выбрали дату заезда: {date.strftime("%d/%m/%Y")}')
+        user_data['check_in'] = date.strftime("%d/%m/%Y")
+        await callback_query.message.answer(f'Введите дату выезда:',
+                                            reply_markup=await SimpleCalendar().start_calendar())
+    print(f'user_data {user_data}')
+    await state.set_state(ChoosDest.exit)
+
+
+@router.callback_query(SimpleCalendarCallback.filter(), ChoosDest.exit)
+async def process_simple_calendar(
+        callback_query: CallbackQuery,
+        callback_data: SimpleCalendarCallback,
+        state: FSMContext):
+    selected, date = await SimpleCalendar().process_selection(
+        callback_query, callback_data)
+    if selected:
+        await callback_query.message.answer(
+            f'Вы выбрали дату выезда: {date.strftime("%d/%m/%Y")}')
+        user_data['exit'] = date.strftime("%d/%m/%Y")
+    print(f'user_data {user_data}')
+
+
