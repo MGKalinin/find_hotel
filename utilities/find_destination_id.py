@@ -87,8 +87,8 @@ def destination_hotel(id_city):
 # https://hotels4.p.rapidapi.com/properties/v2/detail детали отеля по id отеля
 
 
-if __name__ == "__main__":
-    destination_city('rome')
+# if __name__ == "__main__":
+#     destination_city('rome')
 
 # if __name__ == "__main__":
 #     destination_hotel('3023')

@@ -77,6 +77,9 @@ async def cmd_cancel(message: Message, state: FSMContext):
 @router.message(F.text, ChoosDest.city)
 # выбор города из доступных
 async def find_city(message: Message, state: FSMContext):
+    """
+    Выбор города из доступных.
+    """
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(possible_cities_disp))
     # destination_city(message.text))
@@ -89,6 +92,9 @@ async def find_hotel(
         callback_data: NumbersCallbackFactory,
         state: FSMContext
 ):
+    """
+    Получение id выбранного города.
+    """
     user_data[callback_data.id_city] = callback_data.name_city
     print(f'user_data {user_data}')
     # await callback.message.edit_text(text=f'Вы выбрали город {callback_data.name_city}')
@@ -103,13 +109,16 @@ async def find_hotel(
 @router.message(lambda message: not message.text.isdigit(), ChoosDest.min_price)
 async def min_price_invalid(message: types.Message):
     """
-    Если введёное минимальное значение не числовое.
+    Провекра что введённая минимальная стоимость является числом.
     """
     return await message.reply("Введите числовое значение\nВведите минимальную стоимость отеля:")
 
 
 @router.message(F.text, ChoosDest.min_price)
 async def min_max_price(message: Message, state: FSMContext):
+    """
+    Получение минимальной стоимости отеля.
+    """
     await message.answer(f'Минимальная стоимость отеля: {message.text}')
     user_data['min'] = message.text
     print(f'user_data {user_data}')
@@ -120,13 +129,16 @@ async def min_max_price(message: Message, state: FSMContext):
 @router.message(lambda message: not message.text.isdigit(), ChoosDest.max_price)
 async def max_price_invalid(message: types.Message):
     """
-    Если введёное максимальное значение не числовое.
+    Провекра что введённая максимальная стоимость является числом.
     """
-    return await message.reply("Введите числовое значение\nВведите минимальную стоимость отеля:")
+    return await message.reply("Введите числовое значение\nВведите максимальную стоимость отеля:")
 
 
 @router.message(F.text, ChoosDest.max_price)
 async def min_max_price(message: Message, state: FSMContext):
+    """
+    Получение максимальной стоимости отеля.
+    """
     await message.answer(f'Максимальная стоимость отеля: {message.text}')
     user_data['max'] = message.text
     print(f'user_data {user_data}')
@@ -141,6 +153,9 @@ async def process_simple_calendar(
         callback_query: CallbackQuery,
         callback_data: SimpleCalendarCallback,
         state: FSMContext):
+    """
+    Выбор даты заезда.
+    """
     selected, date = await SimpleCalendar().process_selection(
         callback_query, callback_data)
     if selected:
@@ -158,6 +173,9 @@ async def process_simple_calendar(
         callback_query: CallbackQuery,
         callback_data: SimpleCalendarCallback,
         state: FSMContext):
+    """
+    Выбор даты выезда.
+    """
     selected, date = await SimpleCalendar().process_selection(
         callback_query, callback_data)
     if selected:
@@ -166,4 +184,4 @@ async def process_simple_calendar(
         user_data['exit'] = date.strftime("%d/%m/%Y")
     print(f'user_data {user_data}')
 
-
+# TODO отправить API запрос с выбранными параметрами
