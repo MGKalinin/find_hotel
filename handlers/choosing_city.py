@@ -161,7 +161,10 @@ async def process_simple_calendar(
     if selected:
         await callback_query.message.answer(
             f'Вы выбрали дату заезда: {date.strftime("%d/%m/%Y")}')
-        user_data['check_in'] = date.strftime("%d/%m/%Y")
+        check_in_ans = date.strftime("%d/%m/%Y")
+        user_data['check_in_day'] = check_in_ans.split('/')[0]
+        user_data['check_in_mon'] = check_in_ans.split('/')[1]
+        user_data['check_in_year'] = check_in_ans.split('/')[2]
         await callback_query.message.answer(f'Введите дату выезда:',
                                             reply_markup=await SimpleCalendar().start_calendar())
     print(f'user_data {user_data}')
@@ -181,7 +184,10 @@ async def process_simple_calendar(
     if selected:
         await callback_query.message.answer(
             f'Вы выбрали дату выезда: {date.strftime("%d/%m/%Y")}')
-        user_data['exit'] = date.strftime("%d/%m/%Y")
+        check_in_ans = date.strftime("%d/%m/%Y")
+        user_data['exit_day'] = check_in_ans.split('/')[0]
+        user_data['exit_mon'] = check_in_ans.split('/')[1]
+        user_data['exit_year'] = check_in_ans.split('/')[2]
     print(f'user_data {user_data}')
 
 # TODO отправить API запрос с выбранными параметрами
