@@ -120,7 +120,7 @@ async def min_max_price(message: Message, state: FSMContext):
     Получение минимальной стоимости отеля.
     """
     await message.answer(f'Минимальная стоимость отеля: {message.text}')
-    user_data['min'] = message.text
+    user_data['min_price'] = message.text
     print(f'user_data {user_data}')
     await message.answer(f'Введите максимальную стоимость отеля:')
     await state.set_state(ChoosDest.max_price)
@@ -140,7 +140,7 @@ async def min_max_price(message: Message, state: FSMContext):
     Получение максимальной стоимости отеля.
     """
     await message.answer(f'Максимальная стоимость отеля: {message.text}')
-    user_data['max'] = message.text
+    user_data['max_price'] = message.text
     print(f'user_data {user_data}')
     await message.answer(f'{user_data}')
     await message.answer(text="Выберите дату заезда:",
@@ -189,5 +189,8 @@ async def process_simple_calendar(
         user_data['exit_mon'] = check_in_ans.split('/')[1]
         user_data['exit_year'] = check_in_ans.split('/')[2]
     print(f'user_data {user_data}')
-
+# user_data= {'553248633938945217': 'Rome, Lazio, Italy',
+# 'min': '11', 'max': '22', 'check_in_day': '01',
+# 'check_in_mon': '12', 'check_in_year': '2023',
+# 'exit_day': '02', 'exit_mon': '12', 'exit_year': '2023'}
 # TODO отправить API запрос с выбранными параметрами

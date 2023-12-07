@@ -46,14 +46,14 @@ def destination_hotel(id_city):
         "destination": {"regionId": id_city},  # id локации из
         # предыдущего запроса
         "checkInDate": {
-            "day": 10,
-            "month": 10,
-            "year": 2022
+            "day": 10,  # check_in_day
+            "month": 10,  # check_in_mon
+            "year": 2022  # check_in_year
         },
         "checkOutDate": {
-            "day": 15,
-            "month": 10,
-            "year": 2022
+            "day": 15,  # exit_day
+            "month": 10,  # exit_mon
+            "year": 2022  # exit_year
         },
         "rooms": [
             {
