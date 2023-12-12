@@ -28,9 +28,17 @@ def destination_city(city):
 
 # '3023': 'Rome, Lazio, Italy'
 # id_city = '3023'
+# 'min_price': '100'
+# 'max_price': '300'
+# 'check_in_day': '20'
+# 'check_in_mon': '12'
+# 'check_in_year': '2023'
+# 'exit_day': '25'
+# 'exit_mon': '12'
+# 'exit_year': '2023'
 
-
-def destination_hotel(id_city):
+def destination_hotel(id_city, min_price, max_price, check_in_day,
+                      check_in_mon, check_in_year, exit_day, exit_mon, exit_year):
     """Функция поиска отелей в выбранном городе.
     Возвращает словарь id отеля: отель."""
     # properties/v2/list # по id локации
@@ -46,14 +54,14 @@ def destination_hotel(id_city):
         "destination": {"regionId": id_city},  # id локации из
         # предыдущего запроса
         "checkInDate": {
-            "day": 10,  # check_in_day
-            "month": 10,  # check_in_mon
-            "year": 2022  # check_in_year
+            "day": check_in_day,  # check_in_day
+            "month": check_in_mon,  # check_in_mon
+            "year": check_in_year  # check_in_year
         },
         "checkOutDate": {
-            "day": 15,  # exit_day
-            "month": 10,  # exit_mon
-            "year": 2022  # exit_year
+            "day": exit_day,  # exit_day
+            "month": exit_mon,  # exit_mon
+            "year": exit_year  # exit_year
         },
         "rooms": [
             {
@@ -65,8 +73,8 @@ def destination_hotel(id_city):
         "resultsSize": 200,
         "sort": "PRICE_LOW_TO_HIGH",
         "filters": {"price": {
-            "max": 150,  # здесь max цена
-            "min": 100  # здесь min цена
+            "max": max_price,  # max_price
+            "min": min_price  # min_price
         }}
     }
     headers = {
@@ -81,8 +89,9 @@ def destination_hotel(id_city):
     for i in response['data']['propertySearch']['properties']:
         possible_hotels[i.get('id')] = i['name']
 
-    # print(f'possible_hotels: {possible_hotels}')
+    print(f'possible_hotels: {possible_hotels}')
     return possible_hotels
+
 
 # https://hotels4.p.rapidapi.com/properties/v2/detail детали отеля по id отеля
 
@@ -91,8 +100,9 @@ def destination_hotel(id_city):
 #     destination_city('rome')
 
 # if __name__ == "__main__":
-#     destination_hotel('3023')
-
+#     destination_hotel('3023', 100, 300,
+#                       20, 12, 2023,
+#                       25, 12, 2023)
 
 # # создаем словарь
 # mydict = {"title": string, "code": integer, "data": array}
@@ -100,4 +110,3 @@ def destination_hotel(id_city):
 # y = json.loads(x)
 #  # 2.сериализуем его в JSON-структуру, как строку
 #  x = json.dumps(mydict)
-
