@@ -17,6 +17,7 @@ from aiogram.types import CallbackQuery
 
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Calendar
+from db.common.models import *
 
 router = Router()
 user_data = {}
@@ -112,6 +113,8 @@ class ChoosDest(StatesGroup):
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(ChoosDest.city)
+    db.create_tables([MainHotel])
+    print(f'бд создана')
     await message.answer(
         text="Введите город:",
         reply_markup=ReplyKeyboardRemove()
@@ -138,6 +141,7 @@ async def find_city(message: Message, state: FSMContext):
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(possible_cities_disp))
     # destination_city(message.text))
+    MainHotel(city=message.text).save()
     await state.set_state(ChoosDest.hotel)
 
 
@@ -150,7 +154,9 @@ async def find_hotel(
     """
     Получение id выбранного города.
     """
-    user_data[callback_data.id_city] = callback_data.name_city
+    # user_data[callback_data.id_city] = callback_data.name_city
+    user_data['id_city'] = callback_data.id_city
+    user_data['name_city'] = callback_data.name_city
     print(f'user_data {user_data}')
     # await callback.message.edit_text(text=f'Вы выбрали город {callback_data.name_city}')
 
@@ -164,7 +170,7 @@ async def find_hotel(
 @router.message(lambda message: not message.text.isdigit(), ChoosDest.min_price)
 async def min_price_invalid(message: types.Message):
     """
-    Провекра что введённая минимальная стоимость является числом.
+    Проверка что введённая минимальная стоимость является числом.
     """
     return await message.reply("Введите числовое значение\nВведите минимальную стоимость отеля:")
 
