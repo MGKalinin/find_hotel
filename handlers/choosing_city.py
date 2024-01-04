@@ -1,23 +1,17 @@
 from aiogram import F, Router, types
-from aiogram.filters import StateFilter, state
-from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import StatesGroup
 # from aiogram.handlers import message
-from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.filters import Command
 from aiogram_calendar import SimpleCalendar, SimpleCalendarCallback
 
 from keyboards.make_keyboard import NumbersCallbackFactory
 from keyboards.make_keyboard import get_keyboard_city
-from utilities.find_destination_id import destination_city, destination_hotel
-from datetime import date
 
 from aiogram.types import CallbackQuery
 
-from aiogram_dialog import DialogManager
-from aiogram_dialog.widgets.kbd import Calendar
-from db.common.models import *
+from db.models import *
 
 router = Router()
 user_data = {}
@@ -113,7 +107,7 @@ class ChoosDest(StatesGroup):
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(ChoosDest.city)
-    db.create_tables([MainHotel])
+    # db.create_tables([MainHotel])
     print(f'бд создана')
     await message.answer(
         text="Введите город:",
@@ -141,7 +135,7 @@ async def find_city(message: Message, state: FSMContext):
     await message.answer(text="Выберите город:",
                          reply_markup=get_keyboard_city(possible_cities_disp))
     # destination_city(message.text))
-    MainHotel(city=message.text).save()
+    # MainHotel(city=message.text).save()
     await state.set_state(ChoosDest.hotel)
 
 
@@ -258,3 +252,5 @@ async def process_simple_calendar(
 # 'exit_day': '02', 'exit_mon': '12', 'exit_year': '2023'}
 # TODO обработать Resulted callback data is too long! > 64 в кнопках
 # TODO обработать выбор отеля,вывести картинки выбранного отеля
+
+

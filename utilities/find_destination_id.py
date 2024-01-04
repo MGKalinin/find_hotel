@@ -37,6 +37,7 @@ def destination_city(city):
 # 'exit_mon': '12'
 # 'exit_year': '2023'
 
+
 def destination_hotel(id_city, min_price, max_price, check_in_day,
                       check_in_mon, check_in_year, exit_day, exit_mon, exit_year):
     """Функция поиска отелей в выбранном городе.
@@ -99,10 +100,17 @@ def destination_hotel(id_city, min_price, max_price, check_in_day,
 # if __name__ == "__main__":
 #     destination_city('rome')
 
-# if __name__ == "__main__":
-#     destination_hotel('3023', 100, 300,
-#                       20, 12, 2023,
-#                       25, 12, 2023)
+user_data = {'id_city': '553248633938945217',
+             'name_city': 'Rome, Lazio, Italy', 'min_price': '100',
+             'max_price': '200', 'check_in_day': '01', 'check_in_mon': '02',
+             'check_in_year': '2024', 'exit_day': 10, 'exit_mon': 2,
+             'exit_year': 2024}
+
+if __name__ == "__main__":
+    destination_hotel('553248633938945217', 100,
+                      500, 1, 2,
+                      2024, 1, 2,
+                      2024)
 
 # # создаем словарь
 # mydict = {"title": string, "code": integer, "data": array}
@@ -110,3 +118,4 @@ def destination_hotel(id_city, min_price, max_price, check_in_day,
 # y = json.loads(x)
 #  # 2.сериализуем его в JSON-структуру, как строку
 #  x = json.dumps(mydict)
+
