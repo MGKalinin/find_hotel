@@ -15,3 +15,5 @@ def get_keyboard_city(ans: dict):
             text=ans.get(i), callback_data=NumbersCallbackFactory(id_city=str(i), name_city=str(ans.get(i))))
         builder.adjust(1)
     return builder.as_markup()
+
+

@@ -1,6 +1,6 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup
+from aiogram.fsm.state import StatesGroup, State
 # from aiogram.handlers import message
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.filters import Command
@@ -11,7 +11,7 @@ from keyboards.make_keyboard import get_keyboard_city
 
 from aiogram.types import CallbackQuery
 
-from db.models import *
+# from db.models import *
 
 router = Router()
 user_data = {}
@@ -89,6 +89,22 @@ possible_hotels = {'790765': 'Hotel Franklin Feel The Sound', '4167485': "Hotel 
                    '12432769': 'Piazza di Spagna Suite de Charme', '24627': ' Condotti Boutique Hotel',
                    '1443366': 'Trianon Borgo Pio', '16150648': 'Colonna Suite del Corso',
                    '792356': 'Rose Garden Palace Roma', '4850373': 'San Carlo Suite', '7785453': 'Hotel Celio'}
+
+possible_rooms = {
+    'Superior Room, Mountain View | Minibar, in-room safe, desk, free WiFi, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/955911b5.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Exterior, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/df4a8f1c.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Buffet, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/62c60ac9.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Check-in/check-out kiosk, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/4aa5ce19.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Grand Deluxe | Minibar, in-room safe, desk, free WiFi, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/35c0050b.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Bar (on property), image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/44b63b53.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Front of property, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/346ef4c3.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Superior Triple Room, Balcony | Minibar, in-room safe, desk, free WiFi, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/4ab33e5c.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Restaurant, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/43d8144b.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Free breakfast, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/a5073121.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Bathrobes, slippers, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/4a085b42.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Deep soaking bathtub, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/cd83ea7a.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Minibar, in-room safe, desk, free WiFi, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/77cf7f97.jpg?impolicy=resizecrop&rw=1200&ra=fit',
+    'Superior Room, Balcony | Minibar, in-room safe, desk, free WiFi, image': 'https://images.trvl-media.com/lodging/10000000/9210000/9209700/9209612/21ef5122.jpg?impolicy=resizecrop&rw=1200&ra=fit'}
 
 
 class ChoosDest(StatesGroup):
@@ -175,7 +191,7 @@ async def min_max_price(message: Message, state: FSMContext):
     Получение минимальной стоимости отеля.
     """
     await message.answer(f'Минимальная стоимость отеля: {message.text}')
-    user_data['min_price'] = message.text
+    user_data['min_price'] = int(message.text)
     print(f'user_data {user_data}')
     await message.answer(f'Введите максимальную стоимость отеля:')
     await state.set_state(ChoosDest.max_price)
@@ -195,7 +211,7 @@ async def min_max_price(message: Message, state: FSMContext):
     Получение максимальной стоимости отеля.
     """
     await message.answer(f'Максимальная стоимость отеля: {message.text}')
-    user_data['max_price'] = message.text
+    user_data['max_price'] = int(message.text)
     print(f'user_data {user_data}')
     await message.answer(f'{user_data}')
     await message.answer(text="Выберите дату заезда:",
@@ -217,9 +233,9 @@ async def process_simple_calendar(
         await callback_query.message.answer(
             f'Вы выбрали дату заезда: {date.strftime("%d/%m/%Y")}')
         check_in_ans = date.strftime("%d/%m/%Y")
-        user_data['check_in_day'] = check_in_ans.split('/')[0]
-        user_data['check_in_mon'] = check_in_ans.split('/')[1]
-        user_data['check_in_year'] = check_in_ans.split('/')[2]
+        user_data['check_in_day'] = int(check_in_ans.split('/')[0])
+        user_data['check_in_mon'] = int(check_in_ans.split('/')[1])
+        user_data['check_in_year'] = int(check_in_ans.split('/')[2])
         await callback_query.message.answer(f'Введите дату выезда:',
                                             reply_markup=await SimpleCalendar().start_calendar())
     print(f'user_data {user_data}')
@@ -240,16 +256,13 @@ async def process_simple_calendar(
         await callback_query.message.answer(
             f'Вы выбрали дату выезда: {date.strftime("%d/%m/%Y")}')
         check_in_ans = date.strftime("%d/%m/%Y")
-        user_data['exit_day'] = check_in_ans.split('/')[0]
-        user_data['exit_mon'] = check_in_ans.split('/')[1]
-        user_data['exit_year'] = check_in_ans.split('/')[2]
+        user_data['exit_day'] = int(check_in_ans.split('/')[0])
+        user_data['exit_mon'] = int(check_in_ans.split('/')[1])
+        user_data['exit_year'] = int(check_in_ans.split('/')[2])
     print(f'user_data {user_data}')
     await callback_query.message.answer(text="Выберите отель:",
                                         reply_markup=get_keyboard_city(possible_hotels))
-# user_data= {'553248633938945217': 'Rome, Lazio, Italy',
-# 'min': '11', 'max': '22', 'check_in_day': '01',
-# 'check_in_mon': '12', 'check_in_year': '2023',
-# 'exit_day': '02', 'exit_mon': '12', 'exit_year': '2023'}
+
 # TODO обработать Resulted callback data is too long! > 64 в кнопках
 # TODO обработать выбор отеля,вывести картинки выбранного отеля
 
