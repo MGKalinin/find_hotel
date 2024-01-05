@@ -115,6 +115,7 @@ class ChoosDest(StatesGroup):
     calend = State()  # календарь
     check_in = State()  # дата заезда
     exit = State()  # дата выезда
+    show_room = State()  # показть фото номера в отеле
 
 
 # .isalpha()
@@ -262,8 +263,29 @@ async def process_simple_calendar(
     print(f'user_data {user_data}')
     await callback_query.message.answer(text="Выберите отель:",
                                         reply_markup=get_keyboard_city(possible_hotels))
+    await state.set_state(ChoosDest.show_room)
+
 
 # TODO обработать Resulted callback data is too long! > 64 в кнопках
-# TODO обработать выбор отеля,вывести картинки выбранного отеля
 
+# вывести фото отеля Exterior, image
+@router.callback_query(NumbersCallbackFactory.filter(), ChoosDest.show_room)
+async def show_foto_rooms(
+        callback: types.CallbackQuery,
+        callback_data: NumbersCallbackFactory,
+        state: FSMContext
+        # message
 
+):
+    """
+    По id отеля показывает фото номеров.
+    """
+    user_data['id_hotel'] = callback_data.id_city
+    user_data['name_hotel'] = callback_data.name_city
+    print(f'user_data {user_data}')
+    # await callback.message.answer_photo(text="Просмотрите фото:",
+    #                                     reply_markup=possible_rooms[
+    #                                         'Exterior, image'])  # possible_rooms['Exterior, image']
+    url = possible_rooms['Exterior, image']
+    await callback.message.reply_photo(text="Просмотрите фото:", photo=url)
+    await callback.message.answer(f'Ввод данных окончен.')

@@ -123,7 +123,10 @@ def destination_hotel(id_city, min_price, max_price, check_in_day,
 #  x = json.dumps(mydict)
 
 def destination_room(hotel):
-    """Функция поиска отеля по id отеля."""
+    """
+    Функция поиска отеля по id отеля.
+    Возвращает фото номера.
+    """
     # properties/v2/detail детали отеля по id отеля
 
     url = "https://hotels4.p.rapidapi.com/properties/v2/detail"
@@ -143,16 +146,17 @@ def destination_room(hotel):
 
     response = requests.post(url, json=payload, headers=headers)
     response = response.json()
-    print(response)
     possible_rooms = {}
-    # for i in response['data']['propertySearch']['properties']:
-    #     possible_rooms[i.get('id')] = i['name']
+    ans = []
+    for i in response['data']['propertyInfo']['propertyGallery']['images']:
+        # print(i)
+        ans.append(i)
+    # print(ans)
+    for k in ans:
+        # print(k['accessibilityText'])
+        possible_rooms[k.get('accessibilityText')] = k['image']['url']
+    print(possible_rooms)
+    return possible_rooms['Exterior, image']  # это url
 
-    # print(f'possible_rooms: {possible_rooms}')
-    # return possible_rooms
-
-
-if __name__ == "__main__":
-    destination_room('9209612')
-
-
+# if __name__ == "__main__":
+#     destination_room('9209612')
