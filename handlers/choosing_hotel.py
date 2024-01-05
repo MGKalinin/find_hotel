@@ -11,7 +11,7 @@ from keyboards.make_keyboard import get_keyboard_city
 
 from aiogram.types import CallbackQuery
 
-# from db.models import *
+from db.database import *
 
 router = Router()
 user_data = {}
@@ -124,7 +124,8 @@ class ChoosDest(StatesGroup):
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(ChoosDest.city)
-    # db.create_tables([MainHotel])
+    # создать таблицу
+    metadata.create_all(engine)
     print(f'бд создана')
     await message.answer(
         text="Введите город:",
@@ -234,6 +235,7 @@ async def process_simple_calendar(
         await callback_query.message.answer(
             f'Вы выбрали дату заезда: {date.strftime("%d/%m/%Y")}')
         check_in_ans = date.strftime("%d/%m/%Y")
+        user_data['check_in_ans'] = check_in_ans
         user_data['check_in_day'] = int(check_in_ans.split('/')[0])
         user_data['check_in_mon'] = int(check_in_ans.split('/')[1])
         user_data['check_in_year'] = int(check_in_ans.split('/')[2])
@@ -256,10 +258,11 @@ async def process_simple_calendar(
     if selected:
         await callback_query.message.answer(
             f'Вы выбрали дату выезда: {date.strftime("%d/%m/%Y")}')
-        check_in_ans = date.strftime("%d/%m/%Y")
-        user_data['exit_day'] = int(check_in_ans.split('/')[0])
-        user_data['exit_mon'] = int(check_in_ans.split('/')[1])
-        user_data['exit_year'] = int(check_in_ans.split('/')[2])
+        check_out_ans = date.strftime("%d/%m/%Y")
+        user_data['check_out_ans'] = check_out_ans
+        user_data['exit_day'] = int(check_out_ans.split('/')[0])
+        user_data['exit_mon'] = int(check_out_ans.split('/')[1])
+        user_data['exit_year'] = int(check_out_ans.split('/')[2])
     print(f'user_data {user_data}')
     await callback_query.message.answer(text="Выберите отель:",
                                         reply_markup=get_keyboard_city(possible_hotels))
@@ -274,7 +277,6 @@ async def show_foto_rooms(
         callback: types.CallbackQuery,
         callback_data: NumbersCallbackFactory,
         state: FSMContext
-        # message
 
 ):
     """
@@ -283,9 +285,21 @@ async def show_foto_rooms(
     user_data['id_hotel'] = callback_data.id_city
     user_data['name_hotel'] = callback_data.name_city
     print(f'user_data {user_data}')
-    # await callback.message.answer_photo(text="Просмотрите фото:",
-    #                                     reply_markup=possible_rooms[
-    #                                         'Exterior, image'])  # possible_rooms['Exterior, image']
     url = possible_rooms['Exterior, image']
     await callback.message.reply_photo(text="Просмотрите фото:", photo=url)
+
+    # добавить элементы в базу данных
+    make_entry = hotels.insert().values([
+        {'name_city': user_data['name_city'],
+         'name_hotel': user_data['name_hotel'],
+         'min_price': user_data['min_price'],
+         'max_price': user_data['max_price'],
+         'check_in_day': user_data['check_in_ans'],
+         'exit_day': user_data['check_out_ans']
+         }])
+
+    # запись новых данных
+    conn.execute(make_entry)
+
     await callback.message.answer(f'Ввод данных окончен.')
+
