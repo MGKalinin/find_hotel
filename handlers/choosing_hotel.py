@@ -151,7 +151,7 @@ async def find_city(message: Message, state: FSMContext):
     Выбор города из доступных.
     """
     await message.answer(text="Выберите город:",
-                         reply_markup=get_keyboard_city(possible_cities_disp))
+                         reply_markup=get_keyboard_city(possible_cities_full))  # possible_cities_disp
     # destination_city(message.text))
     # MainHotel(city=message.text).save()
     await state.set_state(ChoosDest.hotel)

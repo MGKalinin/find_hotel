@@ -26,18 +26,6 @@ def destination_city(city):
     return possible_cities
 
 
-# '3023': 'Rome, Lazio, Italy'
-# id_city = '3023'
-# 'min_price': '100'
-# 'max_price': '300'
-# 'check_in_day': '20'
-# 'check_in_mon': '12'
-# 'check_in_year': '2023'
-# 'exit_day': '25'
-# 'exit_mon': '12'
-# 'exit_year': '2023'
-
-
 def destination_hotel(id_city, min_price, max_price, check_in_day,
                       check_in_mon, check_in_year, exit_day, exit_mon, exit_year):
     """Функция поиска отелей в выбранном городе.
@@ -99,14 +87,6 @@ def destination_hotel(id_city, min_price, max_price, check_in_day,
 # if __name__ == "__main__":
 #     destination_city('rome')
 
-# user_data = {'id_city': '553248633938945217',
-#              'name_city': 'Rome, Lazio, Italy', 'min_price': 100,
-#              'max_price': 300,
-#              'check_in_day': 8, 'check_in_mon': 1,
-#              'check_in_year': 2024, 'exit_day': 14, 'exit_mon': 1,
-#              'exit_year': 2024}
-
-
 # if __name__ == "__main__":
 #     destination_hotel(user_data['id_city'], user_data['min_price'],
 #                       user_data['max_price'], user_data['check_in_day'],
@@ -146,6 +126,7 @@ def destination_room(hotel):
 
     response = requests.post(url, json=payload, headers=headers)
     response = response.json()
+    # print(response)
     possible_rooms = {}
     ans = []
     for i in response['data']['propertyInfo']['propertyGallery']['images']:
@@ -155,8 +136,9 @@ def destination_room(hotel):
     for k in ans:
         # print(k['accessibilityText'])
         possible_rooms[k.get('accessibilityText')] = k['image']['url']
-    print(possible_rooms)
+    # print(possible_rooms)
     return possible_rooms['Exterior, image']  # это url
 
 # if __name__ == "__main__":
 #     destination_room('9209612')
+
