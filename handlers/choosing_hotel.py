@@ -29,11 +29,6 @@ possible_cities_full = {'553248633938945217': 'Rome City Centre, Rome, Lazio, It
                         '9605': 'Romeoville, Illinois, United States of America',
                         '6046256': 'Trastevere, Rome, Lazio, Italy', '6341167': 'Trevi Fountain, Rome, Lazio, Italy'}
 
-possible_cities_disp = {'553248633938945217': 'Rome, Lazio, Italy', '3023': 'Lazio, Italy', '5194566': 'Italy',
-                        '6200441': 'Rome, Lazio, Italy', '9699': 'Georgia, United States',
-                        '6046253': 'Rome, Lazio, Italy', None: 'Fiumicino, Lazio, Italy',
-                        '9605': 'Illinois, United States', '6046256': 'Rome, Lazio, Italy',
-                        '6341167': 'Rome, Lazio, Italy'}
 
 possible_hotels = {'790765': 'Hotel Franklin Feel The Sound', '4167485': "Hotel Giglio dell'Opera",
                    '892288': 'Hotel Cambridge', '9578388': 'Radio Hotel', '83496': 'Hotel Pineta Palace',
@@ -151,9 +146,8 @@ async def find_city(message: Message, state: FSMContext):
     Выбор города из доступных.
     """
     await message.answer(text="Выберите город:",
-                         reply_markup=get_keyboard_city(possible_cities_full))  # possible_cities_disp
+                         reply_markup=get_keyboard_city(possible_cities_full))  # possible_cities_shot
     # destination_city(message.text))
-    # MainHotel(city=message.text).save()
     await state.set_state(ChoosDest.hotel)
 
 
@@ -269,9 +263,6 @@ async def process_simple_calendar(
     await state.set_state(ChoosDest.show_room)
 
 
-# TODO обработать Resulted callback data is too long! > 64 в кнопках
-
-# вывести фото отеля Exterior, image
 @router.callback_query(NumbersCallbackFactory.filter(), ChoosDest.show_room)
 async def show_foto_rooms(
         callback: types.CallbackQuery,
@@ -280,7 +271,7 @@ async def show_foto_rooms(
 
 ):
     """
-    По id отеля показывает фото номеров.
+    По id отеля показывает фото.
     """
     user_data['id_hotel'] = callback_data.id_city
     user_data['name_hotel'] = callback_data.name_city
@@ -303,3 +294,5 @@ async def show_foto_rooms(
 
     await callback.message.answer(f'Ввод данных окончен.')
 
+# TODO показать итог введённых данных ?
+# TODO показать историю запросов
