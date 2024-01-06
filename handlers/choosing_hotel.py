@@ -29,7 +29,6 @@ possible_cities_full = {'553248633938945217': 'Rome City Centre, Rome, Lazio, It
                         '9605': 'Romeoville, Illinois, United States of America',
                         '6046256': 'Trastevere, Rome, Lazio, Italy', '6341167': 'Trevi Fountain, Rome, Lazio, Italy'}
 
-
 possible_hotels = {'790765': 'Hotel Franklin Feel The Sound', '4167485': "Hotel Giglio dell'Opera",
                    '892288': 'Hotel Cambridge', '9578388': 'Radio Hotel', '83496': 'Hotel Pineta Palace',
                    '803362': 'Hotel Medici', '89626321': 'Croce Apartments', '2794156': 'Ardeatina Park Hotel',
@@ -122,6 +121,11 @@ async def cmd_start(message: Message, state: FSMContext):
     # создать таблицу
     metadata.create_all(engine)
     print(f'бд создана')
+    # TODO message.from_user.id в бд- по нему выводить историю запросов?
+    # message.from_user.id
+    print(f'message.from_user.id {message.from_user.id}')
+    user_data['user.id'] = message.from_user.id
+    print(f'user_data {user_data}')
     await message.answer(
         text="Введите город:",
         reply_markup=ReplyKeyboardRemove()
@@ -281,7 +285,8 @@ async def show_foto_rooms(
 
     # добавить элементы в базу данных
     make_entry = hotels.insert().values([
-        {'name_city': user_data['name_city'],
+        {'user.id': user_data['user.id'],
+         'name_city': user_data['name_city'],
          'name_hotel': user_data['name_hotel'],
          'min_price': user_data['min_price'],
          'max_price': user_data['max_price'],
