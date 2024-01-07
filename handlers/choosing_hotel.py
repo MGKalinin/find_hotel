@@ -281,7 +281,7 @@ async def show_foto_rooms(
     user_data['name_hotel'] = callback_data.name_city
     print(f'user_data {user_data}')
     url = possible_rooms['Exterior, image']
-    await callback.message.reply_photo(text="Просмотрите фото:", photo=url)
+    await callback.message.answer_photo(text="Просмотрите фото:", photo=url)  # reply_photo
 
     # добавить элементы в базу данных
     make_entry = hotels.insert().values([
