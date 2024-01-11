@@ -121,10 +121,10 @@ async def cmd_start(message: Message, state: FSMContext):
     # создать таблицу
     metadata.create_all(engine)
     print(f'бд создана')
-    # TODO message.from_user.id в бд- по нему выводить историю запросов?
+
     # message.from_user.id
     print(f'message.from_user.id {message.from_user.id}')
-    user_data['user.id'] = message.from_user.id
+    user_data['user_id'] = message.from_user.id
     print(f'user_data {user_data}')
     await message.answer(
         text="Введите город:",
@@ -280,12 +280,21 @@ async def show_foto_rooms(
     user_data['id_hotel'] = callback_data.id_city
     user_data['name_hotel'] = callback_data.name_city
     print(f'user_data {user_data}')
-    url = possible_rooms['Exterior, image']
-    await callback.message.answer_photo(text="Просмотрите фото:", photo=url)  # reply_photo
+    # TODO вывести все фото в цикле в answer_photo?
+    # url = possible_rooms['Exterior, image']
+    url = [value for value in possible_rooms.values()]  # здесь написать функцию destination_room
+    # await callback.message.answer_photo(text="Просмотрите фото:", photo=url)  # reply_photo
+    for i in url:
+        await callback.message.answer_photo(photo=i)  # text="Просмотрите фото:",
+
+    #     for room, image_url in possible_rooms.items():
+    #         print(f'Room: {room}\nImage URL: {image_url}\n')
+
+    # [print(value) for value in possible_rooms.values()]
 
     # добавить элементы в базу данных
     make_entry = hotels.insert().values([
-        {'user.id': user_data['user.id'],
+        {'user_id': user_data['user_id'],
          'name_city': user_data['name_city'],
          'name_hotel': user_data['name_hotel'],
          'min_price': user_data['min_price'],
@@ -299,5 +308,22 @@ async def show_foto_rooms(
 
     await callback.message.answer(f'Ввод данных окончен.')
 
+
 # TODO показать итог введённых данных ?
 # TODO показать историю запросов
+@router.message(Command(commands=["history"]))
+# Начало работы бота по команде /start
+async def cmd_start(message: Message, state: FSMContext):
+    """
+    По команде /history выводит историю запросов.
+    """
+
+    # TODO message.from_user.id в бд- по нему выводить историю запросов?
+
+    await message.answer(
+        text="История запросов")
+    # select_all_query = db.select([hotels])
+    select_all_query = db.select([hotels]).where(hotels.columns.user_id == '400997168')
+    # select_all_query = db.select([hotels]).where(hotels.columns.min_price == 200)
+    select_all_results = conn.execute(select_all_query)
+    print(select_all_results.fetchall())

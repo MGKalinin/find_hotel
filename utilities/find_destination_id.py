@@ -136,7 +136,8 @@ def destination_room(hotel):
         # print(k['accessibilityText'])
         possible_rooms[k.get('accessibilityText')] = k['image']['url']
     # print(possible_rooms)
-    return possible_rooms['Exterior, image']  # это url
+    return possible_rooms  # это словарь url-по нему в цикле
+    # callback.message.answer_photo выведет фото отеля
 
 # if __name__ == "__main__":
 #     destination_room('9209612')

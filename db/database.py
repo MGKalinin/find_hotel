@@ -12,7 +12,7 @@ metadata = db.MetaData()
 # таблица, колонки, типы данных
 hotels = db.Table('SearchResult', metadata,
                   db.Column('id', db.Integer, primary_key=True),
-                  db.Column('user.id', db.Text),
+                  db.Column('user_id', db.Text),
                   db.Column('name_city', db.Text),
                   db.Column('name_hotel', db.Text),
                   db.Column('min_price', db.Integer),
