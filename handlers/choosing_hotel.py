@@ -324,7 +324,9 @@ async def cmd_start(message: Message, state: FSMContext):
     select_all_query = db.select([hotels]).where(hotels.columns.user_id == '400997168')
     # select_all_query = db.select([hotels]).where(hotels.columns.min_price == 200)
     select_all_results = conn.execute(select_all_query)
-    print(select_all_results.fetchall())
+    res = select_all_results.fetchall()
+    print(type(res))  # class 'list'
+    print(f'это: {select_all_results.fetchall()}')
 
     await message.answer(
-        text=f"История запросов: {select_all_results.fetchall()}")
+        text=f"История запросов: {res}")
