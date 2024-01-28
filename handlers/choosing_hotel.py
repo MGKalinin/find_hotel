@@ -12,6 +12,7 @@ from keyboards.make_keyboard import get_keyboard_city
 from aiogram.types import CallbackQuery
 
 from db.database import *
+from utilities.find_destination_id import destination_city, destination_hotel, destination_room
 
 router = Router()
 user_data = {}
@@ -150,8 +151,8 @@ async def find_city(message: Message, state: FSMContext):
     Выбор города из доступных.
     """
     await message.answer(text="Выберите город:",
-                         reply_markup=get_keyboard_city(possible_cities_full))  # possible_cities_shot
-    # destination_city(message.text))
+                         # reply_markup=get_keyboard_city(possible_cities_full))  # это для теста
+                         reply_markup=get_keyboard_city(destination_city(message.text)))  # это реал
     await state.set_state(ChoosDest.hotel)
 
 
@@ -263,7 +264,23 @@ async def process_simple_calendar(
         user_data['exit_year'] = int(check_out_ans.split('/')[2])
     print(f'user_data {user_data}')
     await callback_query.message.answer(text="Выберите отель:",
-                                        reply_markup=get_keyboard_city(possible_hotels))
+                                        # reply_markup=get_keyboard_city(possible_hotels))  # это тест
+                                        reply_markup=get_keyboard_city(
+                                            destination_hotel(id_city=str(callback_data),
+                                                              min_price=user_data['min_price'],
+                                                              max_price=user_data['max_price'],
+                                                              check_in_day=user_data['check_in_day'],
+                                                              check_in_mon=user_data['check_in_mon'],
+                                                              check_in_year=user_data['check_in_year'],
+                                                              exit_day=user_data['exit_day'],
+                                                              exit_mon=user_data['exit_mon'],
+                                                              exit_year=user_data['exit_year'])))  # это реал
+    # TODO прописать аргументы в функцию destination_hotel
+    # min_price, max_price, check_in_day,check_in_mon, check_in_year, exit_day, exit_mon, exit_year
+
+    # user_data={'user_id': 400997168, 'id_city': '553248633938945217', 'name_city': 'Rome City Centre, Rome, Lazio,
+    # Italy', 'min_price': 100, 'max_price': 500, 'check_in_ans': '29/01/2024', 'check_in_day': 29, 'check_in_mon':
+    # 1, 'check_in_year': 2024, 'check_out_ans': '31/01/2024', 'exit_day': 31, 'exit_mon': 1, 'exit_year': 2024}
     await state.set_state(ChoosDest.show_room)
 
 
@@ -280,10 +297,13 @@ async def show_foto_rooms(
     user_data['id_hotel'] = callback_data.id_city
     user_data['name_hotel'] = callback_data.name_city
     print(f'user_data {user_data}')
-    # TODO вывести все фото в цикле в answer_photo?
+
     # url = possible_rooms['Exterior, image']
-    url = [value for value in possible_rooms.values()]  # здесь написать функцию destination_room
+    # TODO прописать вывод фото по  id отеля destination_room(hotel)
+    # url = [value for value in possible_rooms.values()]  # это тест здесь написать функцию destination_room
     # await callback.message.answer_photo(text="Просмотрите фото:", photo=url)  # reply_photo
+
+    url = [value for value in destination_room(user_data['id_hotel']).values()]  # это реал
     for i in url:
         await callback.message.answer_photo(photo=i)  # text="Просмотрите фото:",
 
@@ -309,8 +329,6 @@ async def show_foto_rooms(
     await callback.message.answer(f'Ввод данных окончен.')
 
 
-# TODO показать итог введённых данных ?
-# TODO показать историю запросов
 @router.message(Command(commands=["history"]))
 # Начало работы бота по команде /start
 async def cmd_start(message: Message, state: FSMContext):
@@ -326,7 +344,21 @@ async def cmd_start(message: Message, state: FSMContext):
     select_all_results = conn.execute(select_all_query)
     res = select_all_results.fetchall()
     print(type(res))  # class 'list'
-    print(f'это: {select_all_results.fetchall()}')
+    print(f'это res: {res}')
+    res = [(1, '400997168', 'Rome City Centre, Rome, Lazio, Italy', 'Hotel Franklin Feel The Sound', 100, 400,
+            '15/01/2024', '28/01/2024'),
+           (2, '400997168', 'Rome, Lazio, Italy', 'Hotel Pantheon', 200, 600, '15/01/2024', '20/01/2024'), (
+               3, '400997168', 'Rome City Centre, Rome, Lazio, Italy', 'Hotel Franklin Feel The Sound', 100, 500,
+               '22/01/2024', '28/01/2024'), (
+               4, '400997168', 'Rome, Lazio, Italy', 'Fairfield Inn & Suites by Marriott', 100, 500, '29/01/2024',
+               '31/01/2024'), (
+               5, '400997168', 'Rome Historic Centre, Rome, Lazio, Italy', 'Sleeps 4 Hot Tub Fenced INN', 200, 500,
+               '29/01/2024', '31/01/2024'), (
+               6, '400997168', 'New York, New York, United States', 'Casa De Palmas, Trademark Collection by', 100, 300,
+               '29/01/2024', '31/01/2024')]
+    # print(v_pechat[1][2:4])
+    # for i in range(len(v_pechat)):
+    #     print(v_pechat[i][2:4])
 
     await message.answer(
         text=f"История запросов: {res}")
