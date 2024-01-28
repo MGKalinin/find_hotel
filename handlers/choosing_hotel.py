@@ -17,10 +17,6 @@ from utilities.find_destination_id import destination_city, destination_hotel, d
 router = Router()
 user_data = {}
 
-possible_cities_shot = {'553248633938945217': 'Rome City Centre', '3023': 'Rome',
-                        '5194566': 'Rome (FCO-Fiumicino - Leonardo da Vinci Intl.)', '6200441': 'Rome Historic Centre',
-                        '9699': 'Rome', '6046253': 'Vatican', None: 'Hilton Rome Airport', '9605': 'Romeoville',
-                        '6046256': 'Trastevere', '6341167': 'Trevi Fountain'}
 
 possible_cities_full = {'553248633938945217': 'Rome City Centre, Rome, Lazio, Italy', '3023': 'Rome, Lazio, Italy',
                         '5194566': 'Rome, Italy (FCO-Fiumicino - Leonardo da Vinci Intl.)',
@@ -345,20 +341,10 @@ async def cmd_start(message: Message, state: FSMContext):
     res = select_all_results.fetchall()
     print(type(res))  # class 'list'
     print(f'это res: {res}')
-    res = [(1, '400997168', 'Rome City Centre, Rome, Lazio, Italy', 'Hotel Franklin Feel The Sound', 100, 400,
-            '15/01/2024', '28/01/2024'),
-           (2, '400997168', 'Rome, Lazio, Italy', 'Hotel Pantheon', 200, 600, '15/01/2024', '20/01/2024'), (
-               3, '400997168', 'Rome City Centre, Rome, Lazio, Italy', 'Hotel Franklin Feel The Sound', 100, 500,
-               '22/01/2024', '28/01/2024'), (
-               4, '400997168', 'Rome, Lazio, Italy', 'Fairfield Inn & Suites by Marriott', 100, 500, '29/01/2024',
-               '31/01/2024'), (
-               5, '400997168', 'Rome Historic Centre, Rome, Lazio, Italy', 'Sleeps 4 Hot Tub Fenced INN', 200, 500,
-               '29/01/2024', '31/01/2024'), (
-               6, '400997168', 'New York, New York, United States', 'Casa De Palmas, Trademark Collection by', 100, 300,
-               '29/01/2024', '31/01/2024')]
-    # print(v_pechat[1][2:4])
-    # for i in range(len(v_pechat)):
-    #     print(v_pechat[i][2:4])
 
     await message.answer(
-        text=f"История запросов: {res}")
+        text=f"История запросов")
+
+    for item in res:
+        await message.answer(text=' '.join(item[2:4]))
+
