@@ -339,7 +339,6 @@ async def cmd_start(message: Message, state: FSMContext):
     # select_all_query = db.select([hotels]).where(hotels.columns.min_price == 200)
     select_all_results = conn.execute(select_all_query)
     res = select_all_results.fetchall()
-    print(type(res))  # class 'list'
     print(f'это res: {res}')
 
     await message.answer(
