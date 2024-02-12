@@ -347,5 +347,3 @@ async def cmd_start(message: Message, state: FSMContext):
     for item in res:
         await message.answer(text=' '.join(item[2:4]))
 
-
-
