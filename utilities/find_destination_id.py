@@ -2,9 +2,6 @@ import requests
 from config import RAPID_API_KEY
 
 
-# city = 'Rome'
-
-
 def destination_city(city):
     """Функция поиска городов по наименованию введённому пользователем.
     Возвращает словарь id города: город."""
@@ -82,25 +79,6 @@ def destination_hotel(id_city, min_price, max_price, check_in_day,
 
 # https://hotels4.p.rapidapi.com/properties/v2/detail детали отеля по id отеля
 
-
-# if __name__ == "__main__":
-#     destination_city('rome')
-
-# if __name__ == "__main__":
-#     destination_hotel(user_data['id_city'], user_data['min_price'],
-#                       user_data['max_price'], user_data['check_in_day'],
-#                       user_data['check_in_mon'],
-#                       user_data['check_in_year'], user_data['exit_day'],
-#                       user_data['exit_mon'],
-#                       user_data['exit_year'])
-
-# # создаем словарь
-# mydict = {"title": string, "code": integer, "data": array}
-# # 1.проводим десериализацию JSON-объекта
-# y = json.loads(x)
-#  # 2.сериализуем его в JSON-структуру, как строку
-#  x = json.dumps(mydict)
-
 def destination_room(hotel):
     """
     Функция поиска отеля по id отеля.
@@ -141,4 +119,3 @@ def destination_room(hotel):
 
 # if __name__ == "__main__":
 #     destination_room('9209612')
-
